@@ -61,7 +61,7 @@ while read -r line
 
         /home/dtiezzi/Softwares/gatk-4.1.6.0/gatk --java-options "-Djava.io.tmpdir=/tmp -XX:+UseSerialGC -Xmx3G" Mutect2 \
         -R $REFGENOME \
-        -L $chrL -I ./INPUTBAM/${name}_md.bam \
+        -L $chrL -I ./$INPUTBAM/${name}_md.bam \
         -O $VCFFILES/$chr.mt2.vcf \
         -tumor ${name} --af-of-alleles-not-in-resource 2.5e-06 \
         --germline-resource $GNOMAD\
@@ -102,5 +102,7 @@ while read -r line
     -R $REFGENOME \
     -AM G/T \
     -AM C/T ;
+
+    cd ..
 
 done < 'bamFiles'
