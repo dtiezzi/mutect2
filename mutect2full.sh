@@ -16,7 +16,11 @@ while read -r line
     OUTVCFS='vcfDir'
     VCFSORTED='vcfSorted'
 
+    echo '[INFO] starting analysis on' $name
+
     ## 1. Generate OXOG metrics:
+
+    echo '[INFO] Step 1: ' $name
 
     /home/dtiezzi/Softwares/gatk-4.1.6.0/gatk --java-options "-XX:+UseSerialGC -Xmx3G" \
     CollectSequencingArtifactMetrics \
@@ -29,6 +33,8 @@ while read -r line
 
     ## 2. Generate pileup summaries on tumor sample:
 
+    echo '[INFO] Step 2: ' $name
+
     /home/dtiezzi/Softwares/gatk-4.1.6.0/gatk --java-options "-XX:+UseSerialGC -Xmx3G" \
     GetPileupSummaries \
     -I ./dupBam/${name}_md.bam \
@@ -37,11 +43,15 @@ while read -r line
 
     ## 3. Calculate contamination on tumor sample
 
+    echo '[INFO] Step 3: ' $name
+
     /home/dtiezzi/Softwares/gatk-4.1.6.0/gatk --java-options "-XX:+UseSerialGC -Xmx3G" \
     CalculateContamination \
     -I ${name}.targeted_sequencing.table -O ./$VCFSORTED/${name}.targeted_sequencing.contamination.table ;
 
     ## 4. Find tumor sample name from BAM
+
+    echo '[INFO] Step 4: ' $name
 
     /home/dtiezzi/Softwares/gatk-4.1.6.0/gatk --java-options "-XX:+UseSerialGC -Xmx3G" \
     GetSampleName \
@@ -49,6 +59,8 @@ while read -r line
     -O tumour.targeted_sequencing.${name} ;
 
     ## 5. Run MuTect2 using only tumor sample on chromosome level (25 commands with different intervals)
+
+    echo '[INFO] Step 5 (MUTECT2 loop): ' $name
 
     while read -r line1;
 
@@ -78,6 +90,8 @@ while read -r line
 
     ## 6. Sort VCF with Picard
 
+    echo '[INFO] Step 6: ' $name
+
     java -jar /home/dtiezzi/Softwares/picard/build/libs/picard.jar SortVcf \
     SEQUENCE_DICTIONARY=$REFDICT \
     OUTPUT=$VCFSORTED/$name.targeted_sequencing.mutect2.tumor_only.sorted.vcf.gz I=$OUTVCFS/$name.vcf.gz
@@ -85,6 +99,8 @@ while read -r line
     cd $VCFSORTED ;
 
     ## 7. Filter variant calls from MuTect
+
+    echo '[INFO] Step 7: ' $name
 
     /home/dtiezzi/Softwares/gatk-4.1.6.0/gatk --java-options "-XX:+UseSerialGC -Xmx3G" \
     FilterMutectCalls \
@@ -95,6 +111,8 @@ while read -r line
 
     ## 8. Filter variants by orientation bias
 
+    echo '[INFO] Step 8: ' $name
+
     VCFFINALDIR='vcfFinal'
     /home/dtiezzi/Softwares/gatk-4.0.2.0/gatk --java-options "-XX:+UseSerialGC -Xmx3G" FilterByOrientationBias  \
     -O ../$VCFFINALDIR/$name.targeted_sequencing.tumor_only.gatk4_mutect2.raw_somatic_mutation.vcf.gz \
@@ -104,5 +122,7 @@ while read -r line
     -AM C/T ;
 
     cd ..
+
+    echo '[INFO] Analysis DONE in ' $name
 
 done < 'bamFiles'
