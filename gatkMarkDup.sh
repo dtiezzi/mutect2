@@ -1,6 +1,6 @@
 #!/bin/bash
 
-INPUTDIR='outBam'
+INPUTDIR='outputBam'
 MIDDIR='sortedBam'
 OUTPUTDIR='mkDupGatk'
 SAMPLE='SRR6677754_sorted'
