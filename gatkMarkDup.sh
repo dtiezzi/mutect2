@@ -2,7 +2,7 @@
 
 INPUTDIR='sortedBam'
 OUTPUTDIR='mkDupGatk'
-SAMPLE='SRR6677754'
+SAMPLE='SRR6677754_sorted'
 REFGENOME='/mnt/md0/humanGenome/TCGA/GRCh38.d1.vd1.fa'
 
 samtools rmdup $INPUTDIR/${SAMPLE}.bam $INPUTDIR/${SAMPLE}_RD.bam ;
