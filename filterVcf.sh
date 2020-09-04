@@ -8,7 +8,7 @@ FUNCOTATODATA='/home/dtiezzi/Softwares/gatk-4.1.6.0/funcotator_dataSources.v1.6.
 
 /home/dtiezzi/Softwares/gatk-4.1.6.0/gatk --java-options "-XX:+UseSerialGC -Xmx3G" LearnReadOrientationModel -I fir2/f1r2.tar.gz -O ${name}_read-orientation-model.tar.gz
 
-/home/dtiezzi/Softwares/gatk-4.1.6.0/gatk --java-options "-XX:+UseSerialGC -Xmx3G" \ FilterMutectCalls -V Sample_somatic.vcf.gz -R $REFGENOME --ob-priors ${name}_read-orientation-model.tar.gz --min-allele-fraction 0.05 --unique-alt-read-count 10 -O $OUTDIR/${name}_somatic_filtered.vcf
+/home/dtiezzi/Softwares/gatk-4.1.6.0/gatk --java-options "-XX:+UseSerialGC -Xmx3G" \ FilterMutectCalls -V $INPUTDIR/${name}.targeted_sequencing.tumor_only.gatk4_mutect2.raw_somatic_mutation.vcf.gz -R $REFGENOME --ob-priors ${name}_read-orientation-model.tar.gz --min-allele-fraction 0.05 --unique-alt-read-count 10 -O $OUTDIR/${name}_somatic_filtered.vcf
 
 grep -E "#|PASS" $OUTDIR/${name}_somatic_filtered.vcf > $OUTDIR/${name}_somatic_filtered_PASS.vcf
 
