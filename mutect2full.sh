@@ -76,7 +76,8 @@ while read -r line
         -L $chrL -I ./$INPUTBAM/${name}_md.bam \
         -O $VCFFILES/$chr.mt2.vcf \
         -tumor ${name} --af-of-alleles-not-in-resource 2.5e-06 \
-        --germline-resource $GNOMAD\
+        --germline-resource $GNOMAD \
+        --f1r2-tar-gz f1r2.tar.gz \
         -pon $PONFILE
 
     done < 'chrLengths' ;
