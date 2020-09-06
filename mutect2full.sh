@@ -10,7 +10,7 @@ while read -r line
     OUTPUTDIR='mkDupGatk'
     GENOME='./refGenome/GRCh38_filt.fa'
     REFDICT='./refGenome/GRCh38_filt.dict'
-    #INPUTBAM='dupBam'
+    INPUTMD='mkDupGatk'
     GNOMAD='/mnt/md0/somatic-hg38-af-only-gnomad.hg38.vcf.gz'
     BEDINTERVALS='/mnt/md0/humanGenome/TCGA/intervals.bed'
     REFGENOME='/mnt/md0/humanGenome/TCGA/GRCh38.d1.vd1.fa'
@@ -64,7 +64,7 @@ while read -r line
 
     /home/dtiezzi/Softwares/gatk-4.1.6.0/gatk --java-options "-XX:+UseSerialGC -Xmx3G" \
     CollectSequencingArtifactMetrics \
-    -I ./$INPUTBAM/${name}_md.bam \
+    -I ./$INPUTMD/${name}_md.bam \
     -O ./OXO/$name \
     --FILE_EXTENSION .txt \
     -R $GENOME ;
@@ -77,7 +77,7 @@ while read -r line
 
     /home/dtiezzi/Softwares/gatk-4.1.6.0/gatk --java-options "-XX:+UseSerialGC -Xmx3G" \
     GetPileupSummaries \
-    -I ./dupBam/${name}_md.bam \
+    -I ./$INPUTMD/${name}_md.bam \
     -O ${name}.targeted_sequencing.table \
     -V $GNOMAD --intervals $BEDINTERVALS -R $GENOME ;
 
@@ -95,7 +95,7 @@ while read -r line
 
     /home/dtiezzi/Softwares/gatk-4.1.6.0/gatk --java-options "-XX:+UseSerialGC -Xmx3G" \
     GetSampleName \
-    -I $INPUTBAM/${name}_md.bam \
+    -I $INPUTMD/${name}_md.bam \
     -O tumour.targeted_sequencing.${name} ;
 
     ## 5. Run MuTect2 using only tumor sample on chromosome level (25 commands with different intervals)
@@ -111,7 +111,7 @@ while read -r line
 
         /home/dtiezzi/Softwares/gatk-4.1.6.0/gatk --java-options "-Djava.io.tmpdir=/tmp -XX:+UseSerialGC -Xmx3G" Mutect2 \
         -R $REFGENOME \
-        -L $chrL -I ./$INPUTBAM/${name}_md.bam \
+        -L $chrL -I ./$INPUTMD/${name}_md.bam \
         -O $VCFFILES/$chr.mt2.vcf \
         -tumor ${name} --af-of-alleles-not-in-resource 2.5e-06 \
         --germline-resource $GNOMAD \
